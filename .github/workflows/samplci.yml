@@ -4,12 +4,14 @@ on:
   push:
     branches:
       - devops-poc
+      - test
 
 
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - devops-poc
+      - test
 
   workflow_dispatch:
     inputs:
