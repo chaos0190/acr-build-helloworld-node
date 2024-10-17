@@ -1,0 +1,62 @@
+name: ECWE Backend CI/CD
+
+on:
+  push:
+    branches:
+      - devops-poc
+
+    paths:
+      - backend-django/**
+      - .github/workflows/backend-cicd.yml
+
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - devops-poc
+
+    paths:
+      - backend-django/**
+      - .github/workflows/backend-cicd.yml
+
+  workflow_dispatch:
+    inputs:
+      build_and_deploy:
+        description: Builds and Deploys application
+        required: true
+        type: boolean
+        default: true
+
+      build_image_tag:
+        description: Build Image Tag (Optional)
+        required: false
+        type: string
+        default: v0.0.0
+
+      deploy_only:
+        description: Deploys application
+        required: true
+        type: boolean
+        default: true
+
+      environment:
+        description: Backend Web App environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - uat
+        default: dev
+
+jobs:
+#Dockerfile linting
+  preBuild:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Lint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: backend-django/djangoproject/Dockerfile
+          config: .hadolint.yaml
