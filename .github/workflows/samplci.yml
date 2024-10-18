@@ -59,11 +59,11 @@ jobs:
           if [ "${{ github.event_name }}" == "push" ]; then
             BRANCH_NAME=${GITHUB_REF##*/}
           elif [ "${{ github.event_name }}" == "pull_request" ]; then
-            BRANCH_NAME=${{ github.head_ref }}
+            BRANCH_NAME=${{ github.base_ref }}
           elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             BRANCH_NAME=${GITHUB_REF##*/}
           fi
-          if [ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.build_image_tag }}" != "v0.0.0" ]; then
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.build_image_tag }}" != "v0.0.0" ]; then
             IMAGE_TAG=${{ github.event.inputs.build_image_tag }}
           else
             IMAGE_TAG=$BRANCH_NAME-${GITHUB_SHA::7}
