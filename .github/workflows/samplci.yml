@@ -64,7 +64,6 @@ jobs:
       
       - name: ACR task
         run: |
-          az acr task create --registry chaos1990 --name myTask --file acr_task.yml --context /dev/null --assign-identity ${{ secrets.AZURE_CLIENT_ID }}
-
+          az acr task create --registry chaos1990 --name myTask --file acr_task.yml --context /dev/null --assign-identity /subscriptions/a86b02d4-bdfe-4fec-b63a-18c61d992583/resourceGroups/acr-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/acrId
       - name: acr task run    
         run: az acr task run --registry chaos1990 --name myTask
