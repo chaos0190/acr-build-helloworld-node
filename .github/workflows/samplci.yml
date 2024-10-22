@@ -65,12 +65,5 @@ jobs:
       - name: ACR task
         run: |
           az acr task create --registry chaos1990 --name myTask --file acr_task.yml --context /dev/null --assign-identity /subscriptions/a86b02d4-bdfe-4fec-b63a-18c61d992583/resourceGroups/acr-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/acrId
-      - name: assign roles
-        run: |
-          principalID=$(az acr task show --name myTask --registry chaos1990 --query identity.userAssignedIdentities.principalId --output tsv)
-          baseregID=$(az acr show --name chaos1990 --query id --output tsv)
-          az role assignment create --assignee $principalID --scope $baseregID --role acrpush
-      - name: acr cred
-        run: az acr task credential add --name myTask --registry chaos1990 --login-server chaos1990.azurecr.io --use-identity ${{ secrets.AZURE_CLIENT_ID }}
       - name: acr task run    
-        run: az acr task run --registry chaos1990 --name myTask --debug
+        run: az acr task run --registry chaos1990 --name myTask 
