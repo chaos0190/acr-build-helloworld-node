@@ -1,0 +1,4 @@
+version: v1.1.0
+steps:
+  - build: -t myContainerRegistry.azurecr.io/myimage:dev .
+  - push: ["myContainerRegistry.azurecr.io/myimage:dev"]
