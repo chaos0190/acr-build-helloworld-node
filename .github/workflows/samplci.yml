@@ -64,3 +64,6 @@ jobs:
       
       - name: ACR task
         run: az acr task create --registry chaos1990 --name myTask --file acr_task.yml --context /dev/null
+
+      - name: acr task run
+        run: az acr task run --registry chaos1990 --name myTask
