@@ -68,4 +68,4 @@ jobs:
       - name: acr cred
         run: az acr task credential add --name myTask --registry chaos1990 --login-server chaos1990.azurecr.io --use-identity ${{ secrets.AZURE_CLIENT_ID }}
       - name: acr task run    
-        run: az acr task run --registry chaos1990 --name myTask
+        run: az acr task run --registry chaos1990 --name myTask --debug
