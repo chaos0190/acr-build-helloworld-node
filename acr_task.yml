@@ -1,4 +1,4 @@
 version: v1.1.0
 steps:
-  - build: -t myContainerRegistry.azurecr.io/myimage:dev .
-  - push: ["myContainerRegistry.azurecr.io/myimage:dev"]
+  - build: -t chaos1990.azurecr.io/myimage:dev .
+  - push: ["chaos1990.azurecr.io/myimage:dev"]
