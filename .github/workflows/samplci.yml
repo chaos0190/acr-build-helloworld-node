@@ -63,7 +63,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       
       - name: ACR task
-        run: az acr task create --registry chaos1990 --name myTask --file acr_task.yml --context /dev/null
+        run: az acr task create --registry chaos1990 --name myTask --file acr_task.yml --context /dev/null --use-identity ${{ secrets.AZURE_CLIENT_ID }}
 
       - name: acr task run
         run: az acr task run --registry chaos1990 --name myTask
