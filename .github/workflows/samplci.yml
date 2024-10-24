@@ -64,4 +64,4 @@ jobs:
 
       - name: ACR task create
         run: |
-          az acr task create --registry ritam1990 --name myTask --file acr_task.yml --context /dev/null --auth-mode None --assign-identity [system]
+          az acr task create --registry ritam0190 --name myTask --file acr_task.yml --context /dev/null --auth-mode None --assign-identity [system]
