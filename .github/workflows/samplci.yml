@@ -75,10 +75,11 @@ jobs:
         with:
           registry: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.AZURE_CLIENT_ID_SP }}
-          password: ${{ secrets.AZURE_CLIENT_SECRET }}
-
-      
+          password: ${{ secrets.AZURE_CLIENT_SECRET }}   
 
       - name: Build and Push Image
         run: |
           docker push $IMAGE_NAME
+
+      - name: remove ip 
+        run: az acr network-rule remove --name ritam0190 --ip-address ${{ steps.ip.outputs.ipv4 }}
