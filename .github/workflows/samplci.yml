@@ -64,4 +64,11 @@ jobs:
 
       - name: ACR task create
         run: |
-          az acr task create --registry ritam0190 --name myTask --file acr_task.yml --context /dev/null --auth-mode None --assign-identity [system]
+          az acr task create --registry ritam1990 --name myTask --file acr_task.yml --context /dev/null --auth-mode None --assign-identity [system]
+
+      - name: assign acr role 
+        run: |
+          principalID=$(az acr task show --name myTask --registry ritam1990 --query identity.principalId --output tsv)
+          echo $principalID
+          baseregID=$(az acr show --name ritam1990 --query id --output tsv)
+          echo $baseregID
