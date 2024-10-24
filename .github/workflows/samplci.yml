@@ -72,3 +72,6 @@ jobs:
           echo $principalID
           baseregID=$(az acr show --name ritam0190 --query id --output tsv)
           echo $baseregID
+
+      - name: acr push
+        run: az acr task run --name myTask --registry ritam0190 
