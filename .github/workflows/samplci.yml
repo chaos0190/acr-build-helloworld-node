@@ -68,6 +68,8 @@ jobs:
 
       - name: assign acr role 
         run: |
+          echo $(pwd)
+          echo $(ls -lrt)
           principalID=$(az acr task show --name myTask --registry ritam0190 --query identity.principalId --output tsv)
           echo $principalID
           baseregID=$(az acr show --name ritam0190 --query id --output tsv)
