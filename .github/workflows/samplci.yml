@@ -1,16 +1,7 @@
 name: ECWE Backend CI/CD
 
 on:
-  push:
-    branches:
-      - devops-poc
-
-
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - devops-poc
-
+  
   workflow_dispatch:
     inputs:
       build_and_deploy:
@@ -41,15 +32,54 @@ on:
         default: dev
 
 jobs:
-#Dockerfile linting
-  preBuild:
+  build_and_push_image:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed') || github.event_name == 'workflow_dispatch'
+    name: Build and Deploy Job
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Lint Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
+      - uses: actions/checkout@v2
         with:
-          dockerfile: backend-django/djangoproject/Dockerfile
-          config: .hadolint.yaml
+          submodules: true
+
+      - name: Set image name
+        run: |
+          set -x
+          if [ "${{ github.event_name }}" == "push" ]; then
+            BRANCH_NAME=${GITHUB_REF##*/}
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            BRANCH_NAME=${{ github.base_ref }}
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            BRANCH_NAME=${GITHUB_REF##*/}
+          fi
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.build_image_tag }}" != "v0.0.0" ]; then
+            IMAGE_TAG=${{ github.event.inputs.build_image_tag }}
+          else
+            IMAGE_TAG=$BRANCH_NAME-${GITHUB_SHA::7}
+          fi 
+          echo "$IMAGE_TAG"
+          echo "IMAGE_NAME=${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:$IMAGE_TAG" >> $GITHUB_ENV
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Build and Push Image
+        run: |
+            docker build -t $IMAGE_NAME .
+      
+      - name: Public IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+      - name: add ip
+        run: az acr network-rule add --name ritam0190 --ip-address ${{ steps.ip.outputs.ipv4 }}
+      - name: Login to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.AZURE_CLIENT_ID_SP }}
+          password: ${{ secrets.AZURE_CLIENT_SECRET }}   
+
+      - name: Build and Push Image
+        run: |
+          docker push $IMAGE_NAME
+
+      - name: remove ip 
+        run: az acr network-rule remove --name ritam0190 --ip-address ${{ steps.ip.outputs.ipv4 }}
