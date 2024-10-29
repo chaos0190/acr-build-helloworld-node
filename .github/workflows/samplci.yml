@@ -61,7 +61,6 @@ jobs:
     steps:
       - name: Set Build Image 
         id: set_build_image
-        if: github.event.inputs.build_only == 'true'
         run: |
           #Get the branch name
           if [ "${{ github.event_name }}" == "push" ]; then
@@ -91,7 +90,6 @@ jobs:
 
       - name: Set Deploy Image 
         id: set_deploy_image
-        if: github.event.inputs.deploy_only == 'true'
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.deploy_image_tag }}" != "v0.0.0" ]; then
             IMAGE_TAG=${{ github.event.inputs.deploy_image_tag }}
@@ -102,7 +100,6 @@ jobs:
       
       - name: Set Deploy Environment
         id: set_env
-        if: github.event.inputs.deploy_only == 'true'
         run: |
           if [ "${{ github.event_name }}" == "push" ] || [ "${{ github.event_name }}" == "pull_requrest" ]; then
             case ${{ steps.set_build_image.outputs.BRANCH_NAME }} in
