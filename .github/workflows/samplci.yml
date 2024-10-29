@@ -121,6 +121,6 @@ jobs:
     steps:
       - name: check bd params
         run: |
-          echo "My Build image : ${{ needs.set_build_params.outputs.BUILD_TAG }}"
+          echo "My Build image : ${{ needs.set_build_params.outputs.BUILD_IMAGE_TAG }}"
           echo "My deploy image : ${{ needs.set_build_params.outputs.DEPLOY_IMAGE_NAME }}"
-          echo "My env : ${{ needs.set_build_params.outputs.DEPLPOY_ENV }}"
+          echo "My env : ${{ needs.set_build_params.outputs.DEPLOY_ENV }}"
