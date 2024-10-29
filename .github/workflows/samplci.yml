@@ -1,3 +1,135 @@
+name: My Backend CI/CD
+#Build triggers
+on:
+  push:
+    branches:
+      - develop
+      - uat
+
+
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - develop
+      - uat
+
+
+  workflow_dispatch:
+    #Build parameters
+    inputs:
+      build_only:
+        description: Builds and Deploys application
+        required: true
+        type: boolean
+        default: true
+
+      build_image_tag:
+        description: Build Image Tag (Optional)
+        required: false
+        type: string
+        default: v0.0.0
+
+      deploy_only:
+        description: Deploys application
+        required: true
+        type: boolean
+        default: true
+
+      deploy_image_tag:
+        description: Deployment Image Tag (Optional)
+        required: false
+        type: string
+        default: v0.0.0
+
+      deploy_environment:
+        description: Backend Web App environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - uat
+        default: dev
+
+jobs:
+  set_build_params:
+    name: Set up build and deploy parameters
+    runs-on: ubuntu-latest
+    outputs:
+      BUILD_IMAGE_NAME: ${{ steps.set_build_image.outputs.BUILD_IMAGE_NAME }}
+      DEPLOY_IMAGE_NAME: ${{ steps.set_deploy_image.outputs.DEPLOY_IMAGE_NAME }}
+      DEPLOY_ENV: ${{ steps.set_env.outputs.DEPLOY_ENV}}
+    steps:
+      - name: Set Build Image 
+        id: set_build_image
+        if: github.events.inputs.build_only == 'true'
+        run: |
+#Get the branch name
+          if [ "${{ github.event_name }}" == "push" ]; then
+            BRANCH_NAME=${GITHUB_REF##*/}
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            BRANCH_NAME=${{ github.base_ref }}
+          elif [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            BRANCH_NAME=${GITHUB_REF##*/}
+          fi
+          if [ "$BRANCH_NAME" == "develop" ]; then 
+            BRANCH_NAME="dev"
+          fi
+  #Set the Build Image tag
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.build_image_tag }}" != "v0.0.0" ]; then
+            IMAGE_TAG=${{ github.event.inputs.build_image_tag }}
+          else
+  #Uncomment the below line if you want to use image tag like - branch-gitCommitHash. eg: IMAGE_TAG->'dev-abcd123'
+            #IMAGE_TAG=$BRANCH_NAME-${GITHUB_SHA::7}
+  #Uncomment the below line if you want to use image tag like - branch-timestamp(mmHHDDMMYY) 
+            #IMAGE_TAG=$BRANCH_NAME-$(date +'%m%H%d%m%y')
+  #Uncomment the below line if you want to use image tag like - branch-gitHubActionBuildNumber
+            IMAGE_TAG=$BRANCH_NAME-${{ github.run_number }}
+          fi 
+          echo "BUILD_IMAGE_NAME=${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+          #echo "IMAGE_NAME=${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:$IMAGE_TAG" >> $GITHUB_ENV
+          echo "BRANCH_NAME=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Set Deploy Image 
+        id: set_deploy_image
+        if: github.events.inputs.deploy_only == 'true'
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.deploy_image_tag }}" != "v0.0.0" ]; then
+            IMAGE_TAG=${{ github.event.inputs.deploy_image_tag }}
+            echo "DEPLOY_IMAGE_NAME=${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+          else
+            echo "DEPLOY_IMAGE_NAME=${{ steps.set_build_image.outputs.BUILD_IMAGE_NAME }}" >> "$GITHUB_OUTPUT"
+          fi
+      
+      - name: Set Deploy Environment
+        id: set_env
+        if: github.events.inputs.deploy_only == 'true'
+        run: |
+          if [ "${{ github.event_name }}" == "push" ] || [ "${{ github.event_name }}" == "pull_requrest" ]; then
+            case ${{ steps.set_build_image.outputs.BRANCH_NAME }} in
+              "dev")
+                DEPLOY_ENV="backend-dev"
+                ;;
+              "uat")
+                DEPLOY_ENV="backend-uat"
+                ;;
+            esac
+          else
+            DEPLOY_ENV="backend-${{ github.event.inputs.deploy_environment }}"
+          fi
+          echo "DEPLOY_ENV=$DEPLOY_ENV" >> "$GITHUB_OUTPUT"
+
+  check_build_params:
+    name: check build and deploy parameters
+    runs-on: ubuntu-latest
+    needs: set_build_params
+      steps:
+        - name: check bd params
+          run: |
+            echo "My Build image : ${{ needs.set_build_params.outputs.BUILD_IMAGE_NAME }}"
+            echo "My deploy image : ${{ needs.set_build_params.outputs.DEPLOY_IMAGE_NAME }}"
+            echo "My env : ${{ needs.set_build_params.outputs.DEPLPOY_ENV }}"
+
+
 name: ECWE Backend CI/CD
 
 on:
