@@ -63,7 +63,7 @@ jobs:
         id: set_build_image
         if: github.events.inputs.build_only == 'true'
         run: |
-        #Get the branch name
+          #Get the branch name
           if [ "${{ github.event_name }}" == "push" ]; then
             BRANCH_NAME=${GITHUB_REF##*/}
           elif [ "${{ github.event_name }}" == "pull_request" ]; then
@@ -74,15 +74,15 @@ jobs:
           if [ "$BRANCH_NAME" == "develop" ]; then 
             BRANCH_NAME="dev"
           fi
-  #Set the Build Image tag
+          #Set the Build Image tag
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.build_image_tag }}" != "v0.0.0" ]; then
             IMAGE_TAG=${{ github.event.inputs.build_image_tag }}
           else
-  #Uncomment the below line if you want to use image tag like - branch-gitCommitHash. eg: IMAGE_TAG->'dev-abcd123'
+            #Uncomment the below line if you want to use image tag like - branch-gitCommitHash. eg: IMAGE_TAG->'dev-abcd123'
             #IMAGE_TAG=$BRANCH_NAME-${GITHUB_SHA::7}
-  #Uncomment the below line if you want to use image tag like - branch-timestamp(mmHHDDMMYY) 
+            #Uncomment the below line if you want to use image tag like - branch-timestamp(mmHHDDMMYY) 
             #IMAGE_TAG=$BRANCH_NAME-$(date +'%m%H%d%m%y')
-  #Uncomment the below line if you want to use image tag like - branch-gitHubActionBuildNumber
+            #Uncomment the below line if you want to use image tag like - branch-gitHubActionBuildNumber
             IMAGE_TAG=$BRANCH_NAME-${{ github.run_number }}
           fi 
           echo "BUILD_IMAGE_NAME=${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
