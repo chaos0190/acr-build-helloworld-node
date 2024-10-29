@@ -91,8 +91,7 @@ jobs:
         id: set_deploy_image
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.deploy_image_tag }}" != "v0.0.0" ]; then
-            IMAGE_TAG=${{ github.event.inputs.deploy_image_tag }}
-            echo "DEPLOY_IMAGE_NAME=${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+            echo "DEPLOY_IMAGE_TAG=${{ github.event.inputs.deploy_image_tag }}" >> "$GITHUB_OUTPUT"
           else
             echo "DEPLOY_IMAGE_TAG=${{ steps.set_build_image.outputs.BUILD_IMAGE_TAG }}" >> "$GITHUB_OUTPUT"
           fi
