@@ -57,13 +57,13 @@ jobs:
     outputs:
       BUILD_IMAGE_NAME: ${{ steps.set_build_image.outputs.BUILD_IMAGE_NAME }}
       DEPLOY_IMAGE_NAME: ${{ steps.set_deploy_image.outputs.DEPLOY_IMAGE_NAME }}
-      DEPLOY_ENV: ${{ steps.set_env.outputs.DEPLOY_ENV}}
+      DEPLOY_ENV: ${{ steps.set_env.outputs.DEPLOY_ENV }}
     steps:
       - name: Set Build Image 
         id: set_build_image
         if: github.events.inputs.build_only == 'true'
         run: |
-#Get the branch name
+        #Get the branch name
           if [ "${{ github.event_name }}" == "push" ]; then
             BRANCH_NAME=${GITHUB_REF##*/}
           elif [ "${{ github.event_name }}" == "pull_request" ]; then
