@@ -1,4 +1,4 @@
-name: My Backend CI/CD
+name: ECWE Backend CI/CD
 #Build triggers
 on:
   push:
