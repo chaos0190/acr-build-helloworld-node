@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       BUILD_IMAGE_TAG: ${{ steps.set_build_image.outputs.BUILD_IMAGE_TAG }}
-      DEPLOY_IMAGE_NAME: ${{ steps.set_deploy_image.outputs.DEPLOY_IMAGE_NAME }}
+      DEPLOY_IMAGE_TAG: ${{ steps.set_deploy_image.outputs.DEPLOY_IMAGE_TAG }}
       DEPLOY_ENV: ${{ steps.set_env.outputs.DEPLOY_ENV }}
     steps:
       - name: Set Build Image 
@@ -94,7 +94,7 @@ jobs:
             IMAGE_TAG=${{ github.event.inputs.deploy_image_tag }}
             echo "DEPLOY_IMAGE_NAME=${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
           else
-            echo "DEPLOY_IMAGE_NAME=${{ steps.set_build_image.outputs.BUILD_IMAGE_NAME }}" >> "$GITHUB_OUTPUT"
+            echo "DEPLOY_IMAGE_TAG=${{ steps.set_build_image.outputs.BUILD_IMAGE_TAG }}" >> "$GITHUB_OUTPUT"
           fi
       
       - name: Set Deploy Environment
@@ -122,5 +122,5 @@ jobs:
       - name: check bd params
         run: |
           echo "My Build image : ${{ needs.set_build_params.outputs.BUILD_IMAGE_TAG }}"
-          echo "My deploy image : ${{ needs.set_build_params.outputs.DEPLOY_IMAGE_NAME }}"
+          echo "My deploy image : ${{ needs.set_build_params.outputs.DEPLOY_IMAGE_TAG }}"
           echo "My env : ${{ needs.set_build_params.outputs.DEPLOY_ENV }}"
