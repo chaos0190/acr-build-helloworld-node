@@ -55,7 +55,7 @@ jobs:
     name: Set up build and deploy parameters
     runs-on: ubuntu-latest
     outputs:
-      BUILD_IMAGE_NAME: ${{ steps.set_build_image.outputs.BUILD_IMAGE_NAME }}
+      BUILD_IMAGE_TAG: ${{ steps.set_build_image.outputs.BUILD_IMAGE_TAG }}
       DEPLOY_IMAGE_NAME: ${{ steps.set_deploy_image.outputs.DEPLOY_IMAGE_NAME }}
       DEPLOY_ENV: ${{ steps.set_env.outputs.DEPLOY_ENV }}
     steps:
@@ -84,8 +84,7 @@ jobs:
             #Uncomment the below line if you want to use image tag like - branch-gitHubActionBuildNumber
             IMAGE_TAG=$BRANCH_NAME-${{ github.run_number }}
           fi 
-          echo "BUILD_IMAGE_NAME=${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
-          #echo "IMAGE_NAME=${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:$IMAGE_TAG" >> $GITHUB_ENV
+          echo "BUILD_IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
           echo "BRANCH_NAME=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Set Deploy Image 
@@ -122,6 +121,6 @@ jobs:
     steps:
       - name: check bd params
         run: |
-          echo "My Build image : ${{ needs.set_build_params.outputs.BUILD_IMAGE_NAME }}"
+          echo "My Build image : ${{ needs.set_build_params.outputs.BUILD_TAG }}"
           echo "My deploy image : ${{ needs.set_build_params.outputs.DEPLOY_IMAGE_NAME }}"
-          echo "My env : ${{ needs.set_build_params.outputs.DEPLOY_ENV }}"
+          echo "My env : ${{ needs.set_build_params.outputs.DEPLPOY_ENV }}"
