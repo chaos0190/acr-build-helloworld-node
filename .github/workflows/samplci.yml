@@ -122,11 +122,11 @@ jobs:
     name: check build and deploy parameters
     runs-on: ubuntu-latest
     needs: set_build_params
-      steps:
-        - name: check bd params
-          run: |
-            echo "My Build image : ${{ needs.set_build_params.outputs.BUILD_IMAGE_NAME }}"
-            echo "My deploy image : ${{ needs.set_build_params.outputs.DEPLOY_IMAGE_NAME }}"
-            echo "My env : ${{ needs.set_build_params.outputs.DEPLPOY_ENV }}"
+    steps:
+      - name: check bd params
+        run: |
+          echo "My Build image : ${{ needs.set_build_params.outputs.BUILD_IMAGE_NAME }}"
+          echo "My deploy image : ${{ needs.set_build_params.outputs.DEPLOY_IMAGE_NAME }}"
+          echo "My env : ${{ needs.set_build_params.outputs.DEPLPOY_ENV }}"
 
 
