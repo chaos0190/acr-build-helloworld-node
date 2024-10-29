@@ -18,7 +18,7 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
  - [Submission Guidelines](#submit)
 
 ## <a name="coc"></a> Code of Conduct
-Help us keep this project open and inclusive. Please read and follow our [Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+Help us keep this project open and inclusive. Please  go read and follow our [Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
 ## <a name="issue"></a> Found an Issue?
 If you find a bug in the source code or a mistake in the documentation, you can help us by
