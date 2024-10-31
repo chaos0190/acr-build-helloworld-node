@@ -134,4 +134,8 @@ jobs:
           echo "My deploy image : ${{ needs.set_build_params.outputs.DEPLOY_IMAGE_TAG }}"
           echo "My env : ${{ needs.set_build_params.outputs.DEPLOY_ENV }}"
           echo "My backend var: ${{ vars.WEB_APP_NAME }}"
+
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
       
