@@ -90,7 +90,7 @@ jobs:
       - name: Set Deploy Image 
         id: set_deploy_image
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.build_only }} != 'true' " ] && [ "${{ github.event.inputs.deploy_image_tag }}" == "v0.0.0" ]; then
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ ${{ github.event.inputs.build_only }} != true ] && [ "${{ github.event.inputs.deploy_image_tag }}" == "v0.0.0" ]; then
             echo "Error! No image tag provided for Deploy only Workflow"
             exit 1
           fi
