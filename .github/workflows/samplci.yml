@@ -119,6 +119,10 @@ jobs:
     needs: set_build_params
     environment: ${{ needs.set_build_params.outputs.DEPLOY_ENV }}
     steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          
       - name: check bd params
         run: |
           echo "My Build image : ${{ needs.set_build_params.outputs.BUILD_IMAGE_TAG }}"
