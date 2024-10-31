@@ -80,9 +80,9 @@ jobs:
             #Uncomment the below line if you want to use image tag like - branch-gitCommitHash. eg: IMAGE_TAG->'dev-abcd123'
             #IMAGE_TAG=$BRANCH_NAME-${GITHUB_SHA::7}
             #Uncomment the below line if you want to use image tag like - branch-timestamp(mmHHDDMMYY) 
-            IMAGE_TAG=$BRANCH_NAME-$(date +'%m%H%d%m%y')
+            #IMAGE_TAG=$BRANCH_NAME-$(date +'%m%H%d%m%y')
             #Uncomment the below line if you want to use image tag like - branch-gitHubActionBuildNumber
-            #IMAGE_TAG=$BRANCH_NAME-${{ github.run_number }}
+            IMAGE_TAG=$BRANCH_NAME-${{ github.run_number }}
           fi 
           echo "BUILD_IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
           echo "BRANCH_NAME=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
@@ -113,13 +113,15 @@ jobs:
           fi
           echo "DEPLOY_ENV=$DEPLOY_ENV" >> "$GITHUB_OUTPUT"
 
-  check_build_params:
+  build_and_deploy:
     name: check build and deploy parameters
     runs-on: ubuntu-latest
     needs: set_build_params
+    environment: ${{ needs.set_build_params.outputs.DEPLOY_ENV }}
     steps:
       - name: check bd params
         run: |
           echo "My Build image : ${{ needs.set_build_params.outputs.BUILD_IMAGE_TAG }}"
           echo "My deploy image : ${{ needs.set_build_params.outputs.DEPLOY_IMAGE_TAG }}"
           echo "My env : ${{ needs.set_build_params.outputs.DEPLOY_ENV }}"
+          echo "My backend var: $WEB_APP_NAME"
