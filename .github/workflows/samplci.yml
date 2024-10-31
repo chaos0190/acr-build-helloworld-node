@@ -164,6 +164,11 @@ jobs:
         run: |
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:${{ needs.set_build_params.outputs.BUILD_IMAGE_TAG }}
 
+      - uses: azure/webapps-deploy@v2
+        with:
+          app-name: '${{ vars.WEB_APP_NAME }}'
+          images: '${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ vars.APP_NAME }}:${{ needs.set_build_params.outputs.DEPLOY_IMAGE_TAG }}'
+
       - name: Remove ip 
         run: az acr network-rule remove --name ritam0190 --ip-address ${{ steps.runner_ip.outputs.ipv4 }}
       
