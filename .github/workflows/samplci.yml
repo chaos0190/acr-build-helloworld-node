@@ -135,6 +135,10 @@ jobs:
           echo "My env : ${{ needs.set_build_params.outputs.DEPLOY_ENV }}"
           echo "My backend var: ${{ vars.WEB_APP_NAME }}"
 
+      - name: Azure Logout
+        if: (needs.set_build_params.outputs.DEPLOY_ENV != 'dev') && ((github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_only == 'true') || github.event_name != 'workflow_dispatch')
+        run: az account clear
+
       - uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
