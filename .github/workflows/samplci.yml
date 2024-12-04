@@ -173,4 +173,8 @@ jobs:
 
       - name: Remove ip 
         run: az acr network-rule remove --name ritam0190 --ip-address ${{ steps.runner_ip.outputs.ipv4 }}
+
+      - name: Azure Logout
+        if: (needs.set_build_params.outputs.DEPLOY_ENV != 'dev') && ((github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_only == 'true') || github.event_name != 'workflow_dispatch')
+        run: az account clear
       
