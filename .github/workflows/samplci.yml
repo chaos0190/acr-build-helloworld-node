@@ -135,6 +135,9 @@ jobs:
           echo "My env : ${{ needs.set_build_params.outputs.DEPLOY_ENV }}"
           echo "My backend var: ${{ vars.WEB_APP_NAME }}"
 
+      - name: check cond
+        if: (needs.set_build_params.outputs.DEPLOY_ENV != 'dev')
+        run: echo 'Ritam'
       - name: Azure Logout
         if: (needs.set_build_params.outputs.DEPLOY_ENV != 'dev') && ((github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_only == 'true') || github.event_name != 'workflow_dispatch')
         run: az account clear
