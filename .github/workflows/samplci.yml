@@ -136,7 +136,7 @@ jobs:
           echo "My backend var: ${{ vars.WEB_APP_NAME }}"
 
       - name: check cond
-        if: (needs.set_build_params.outputs.DEPLOY_ENV != 'dev')
+        if: (needs.set_build_params.outputs.DEPLOY_ENV != 'backend-dev')
         run: echo 'Ritam'
       - name: Azure Logout
         if: (needs.set_build_params.outputs.DEPLOY_ENV != 'dev') && ((github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_only == 'true') || github.event_name != 'workflow_dispatch')
